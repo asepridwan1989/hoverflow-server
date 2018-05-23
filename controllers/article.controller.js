@@ -33,7 +33,7 @@ module.exports = {
     addArticle: (req, res)=>{
         const token = req.headers.token
         let verified = jwt.decode(token,process.env.TOKENKEY)
-        console.log(verified)
+        console.log('=============>>>>>>',verified)
         const userId = verified.id
         const title = req.body.title
         const content = req.body.content
