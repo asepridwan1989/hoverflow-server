@@ -12,7 +12,7 @@ var cors = require('cors')
 var app = express();
 app.use(cors())
 require('dotenv').config()
-mongoose.connect(`mongodb://${process.env.USERKEY}:${process.env.PASSKEY}@ds129560.mlab.com:29560/blog`)
+mongoose.connect(`mongodb://${process.env.USERKEY}:${process.env.PASSKEY}@ds233500.mlab.com:33500/hoverflow`)
 const db = mongoose.connection
 db.on('error',console.error.bind(console,'connection error'))
 db.once('open', function(){
