@@ -8,7 +8,7 @@ module.exports = {
         const token = req.headers.token
         let verified = jwt.decode(token,process.env.TOKENKEY)
         const userId = verified.id
-        Article.find({
+        rticle.find({
             userId
         })
         .then(article=>{
@@ -33,7 +33,6 @@ module.exports = {
     addArticle: (req, res)=>{
         const token = req.headers.token
         let verified = jwt.decode(token,process.env.TOKENKEY)
-        console.log('=============>>>>>>',verified)
         const userId = verified.id
         const title = req.body.title
         const content = req.body.content
@@ -58,7 +57,6 @@ module.exports = {
 
     editArticle: (req, res) => {
         const id = mongoose.Types.ObjectId(req.params.id)
-        const task = req.body.task
         const token = req.headers.token
         let verified = jwt.decode(token,process.env.TOKENKEY)
         const userId = verified.id
@@ -85,7 +83,7 @@ module.exports = {
                 } else {
                   res.status(201).send({
                     message: 'successfuly edited article',
-                    data: article
+                    data: result
                   })
                 }
               })
@@ -161,27 +159,29 @@ module.exports = {
         })
     },
     getListAll: (req, res)=>{
+        console.log('masuk home')
         Article.find()
         .populate('userId', 'username')
         .then(article=>{
+          console.log(article)
           if(article.length > 0){
               res.status(200).json({
                   message: 'successfuly got data',
                   data: article
               })
           }else{
-            res.status(200).json({
+                res.status(200).json({
                 message: 'you dont have any article'
             })
           }
         })
         .catch(err=>{
+            console.log('error', err)
             res.status(403).json({
                 message: 'invalid user'
             })
         })
     },
-
     getOneArticle: (req, res) => {
         const id = mongoose.Types.ObjectId(req.params.id)
         Article.findById(id, (err, article) => {
@@ -190,12 +190,19 @@ module.exports = {
                     message: 'article not found'
                 })
             } else {
-                console.log('===========================',article)
-                res.status(200).json({
-                    message: 'successfuly got data',
-                    data: article
-                })
+                // res.status(200).json({
+                //     message: 'successfuly got data',
+                //     data: article
+                // })
             }
-        })
+        }).populate('userId', 'username')
+        .exec(function (err, articles) {
+          if (err) return handleError(err);
+          console.log('===========================',articles)
+          res.status(200).json({
+              message: 'successfuly got data',
+              data: articles
+          })
+        });
     }
 }
